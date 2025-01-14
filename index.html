@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image search </title>
+    <link rel="stylesheet" href="imagesearch.css">
+</head>
+<body>
+    <h1>Image Search Bar</h1>
+    <form id="search-form">
+        <input type="text" name="" id="search-box" placeholder="Search anything here">
+        <button type="submit">Search</button>
+    </form>
+    <div id="search-result"></div>
+    <button id="show-more-btn">Show more</button>
+    <script>
+
+        const accessKey="YYsGElLAW1b_gVbPEUfA38aFxzGYWo4UOxd6oHQ-SW4";//unsplash API key
+
+        const searchForm=document.getElementById("search-form");
+        const searchBox=document.getElementById("search-box");
+        const searchResult=document.getElementById("search-result");
+        const showmoreBtn=document.getElementById("show-more-btn");
+
+        let keyword="";
+        let page=1;
+        async function searchImage(){
+
+        
+        keyword=searchBox.value;
+        const url=`https://api.unsplash.com/search/photos?page=${page}&query=${keyword}&client_id=${accessKey}&per_page=12`;
+
+        const response=await fetch(url);
+        const data=await response.json();
+
+        if(page==1){
+            searchResult.innerHTML="";//to display other results at the same time after searching another result b
+        }
+        const results=data.results;
+        results.map((result)=>{
+            const image=document.createElement("img");//to create image tag on the web page 
+            image.src=result.urls.small;
+
+            const imageLink=document.createElement("a");//to use the link of unsplash img src or link
+
+            imageLink.href=result.links.html;//it will add one link to the a tag 
+            imageLink.target="_blank";//it will open the link in new tab 
+
+            imageLink.appendChild(image);//it is for image place in the a tag
+            searchResult.appendChild(imageLink);//it will display image link in the search dispaly or search results
+        })
+            showmoreBtn.style.display="block";//it is button functionalities to show showmorebtn below the page
+    }
+            searchForm.addEventListener("submit", (e)=>{
+            e.preventDefault();//it prevents dafault feature provided by the function
+            page=1;
+            searchImage();
+            });
+
+            showmoreBtn.addEventListener("click",()=>{ //
+                page++;//it will increase the page after showing 12 results after clicking the btn
+                searchImage();
+            })
+    </script>
+</body>
+</html>
